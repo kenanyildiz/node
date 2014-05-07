@@ -7,7 +7,7 @@
         * { margin: 0; padding: 0; border: 0; text-decoration: none }
         html, body { width: 100%; height: 100%; overflow: hidden }
         .hidden { display: none !important; }
-        .item { float: left; background: #aaa; border: 2px solid black; text-transform: uppercase; cursor: pointer; font: 10rem/10rem Tahoma; text-align: center; }
+        .item { float: left; background: #aaa; border: 2px solid black; text-transform: uppercase; cursor: pointer; display: table; vertical-align: middle; font: 10rem Tahoma; text-align: center; }
         .item.selected { background: gray; }
         .item.x { color: red; }
         .item.o { color: blue; }
@@ -207,7 +207,7 @@ XOX = {
         var winHeight   = $(window).height();
         var itemWidth   = ((winWidth-12)/3);
         var itemHeight  = ((winHeight-12)/3);
-        $('.item').width(itemWidth).height(itemHeight);
+        $('.item').width(itemWidth).height(itemHeight).css('line-height',itemHeight+'px');
     },
 
     chooseTeam: {
@@ -229,7 +229,7 @@ XOX = {
                 $('.close-btn').trigger('click');
                 XOX.socketVar.emit('new user', selected, function(data){
                     if (data){
-                        console.log(data);
+                        //console.log(data);
                     } else {
                         $('.reserved-team.pp-btn').trigger('click');
                     }
@@ -289,7 +289,10 @@ XOX = {
                 if(flag) break;
             }
 
-
+            // Hepsini doldurduklarındaki kazanamama durumu!
+            if ( XOX.playCount == 9 && XOX.noWinCount == 0 ){
+                XOX.socketVar.emit('clear player data');
+            }
 
         }
     },
@@ -297,6 +300,7 @@ XOX = {
     clear: function(clearClass,closePopup){
         //clearClass = clearClass || false;
         if (clearClass != undefined){
+            console.log('Silcem!');
             $('.item').removeClass('selected x o win').attr('data-person','').html('');
         }
         if (closePopup != undefined){
@@ -327,10 +331,10 @@ $(document).ready(function(){
 
     XOX.chooseTeam.init();
 
-    // Hepsini doldurduklarındaki kazanamama durumu!
-    if ( XOX.playCount == 9 && XOX.noWinCount == 0 ){
-        XOX.socketVar.emit('clear player data');
-    }
+//    // Hepsini doldurduklarındaki kazanamama durumu!
+//    if ( XOX.playCount == 9 && XOX.noWinCount == 0 ){
+//        XOX.socketVar.emit('clear player data');
+//    }
 
     var con = io.connect('http://localhost:3000');
 
@@ -402,7 +406,7 @@ $(document).ready(function(){
             var c = true;
             $('.play-time-finished .ok').click(function(){
                 if ( c ) {
-                XOX.socketVar.emit('sureBittiRakipKazandiRestart');
+                //XOX.socketVar.emit('sureBittiRakipKazandiRestart');
                     c = false;
                 }
             });
@@ -413,7 +417,7 @@ $(document).ready(function(){
             var z = true;
             $('.your-win .ok').click(function(){
                 if ( z ) {
-                    XOX.socketVar.emit('sureBittiRakipKazandiRestart');
+                    //XOX.socketVar.emit('sureBittiRakipKazandiRestart');
                     z = false;
                 }
             });
