@@ -1,0 +1,20 @@
+{
+    "name": "xox",
+    "version": "0.0.1",
+    "private": "true",
+    "description": "XOX",
+    "engines": {
+        "node": ">= v0.10.x",
+        "npm":  "1.2.x"
+    },
+    "dependencies": {
+        "socket.io": "0.9.16",
+        "express": "3.2.6"
+    },
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon -e app.js",
+        "predeploy": "echo xox deploying...",
+        "postdeploy": "echo xox deployed."
+    }
+}

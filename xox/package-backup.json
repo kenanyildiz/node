@@ -1,0 +1,50 @@
+{
+    "name": "twitMap",
+    "version": "0.1.0",
+    "private": true,
+    "author": "Cem Gencer <cem.gencer@me.com>",
+    "description": "realtime twit-mapping",
+    "engines": {
+        "node": ">= v0.10.x",
+        "npm":  "1.2.x"
+    },
+    "keywords": [
+        "twitter", "leaflet", "realtime", "mapping"
+    ],
+    "analyze": false,
+    "license": "MIT",
+    "repository" : {
+        "type" : "git",
+        "url" : "http://github.com/npm/npm.git"
+    },
+    "main": "source/index.js",
+    "dependencies": {
+        "coffee-script": "*",
+        "express": "3.1.0",
+        "http": "*",
+        "path": "*",
+        "jade": "*",
+        "stylus": "*",
+        "stylus-font-face": "*",
+        "nib": "*",
+        "fluidity": "*",
+        "axis-css": "*",
+        "node-minify": "*",
+        "underscore": "1.5.*",
+        "underscore.string": "*",
+        "sqlite3": "2.1.x",
+        "cron": "*",
+        "passport": "*",
+        "passport-facebook": "*",
+        "leaflet": "*",
+        "leaflet.heat": "*",
+        "socket.io": "*",
+        "ntwitter": "*"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "start": "nodemon -e js,jade source/js/index.js",
+        "predeploy": "echo twitMap deploying...",
+        "postdeploy": "echo twitMap deployed."
+    }
+}

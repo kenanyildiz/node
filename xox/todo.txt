@@ -1,0 +1,7 @@
+- Giriş popup'ı hazırlanacak.
+
+- 2 kişi giriş yaptığında geri sayım başlayacak.
+
+- Skorlar tutulacak.
+
+- Zaman kalırsa izleyici modu kafası yapılacak.

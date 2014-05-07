@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * { margin: 0; padding: 0; border: 0; text-decoration: none }
+        html, body { width: 100%; height: 100%; overflow: hidden }
+        .hidden { display: none !important; }
+        .item { float: left; background: #aaa; border: 2px solid black; text-transform: uppercase; cursor: pointer; font: 10rem/10rem Tahoma; text-align: center; }
+        .item.selected { background: gray; }
+        .item.x { color: red; }
+        .item.o { color: blue; }
+        .item.win { background: white !important; }
+        div.countdown { background: black; text-align: center; color: white; display: inline-block; font: 20px Arial; position: absolute; padding: 20px; right: 0px; bottom: 30px; }
+        div.countdown.x { background: red }
+        div.countdown.o { background: blue }
+        .popup { width: 300px; padding: 30px 30px 20px 30px; text-align: center; background: #e7e7e7; position: absolute; top: 20%; left: 50%; margin: 0 0 0 -200px; }
+        .popup .close-btn { background: #e7e7e7; cursor: pointer; outline: none; color: white; font: 24px Tahoma; position: absolute; top: -20px; right: -10px; padding: 5px 10px; border-radius: 50%; }
+        .popup .close-btn:hover { color: #999; }
+        .popup p { font: 18px Arial; color: #aaa; text-align: center; margin-bottom: 15px; }
+        .popup .ok { margin: 0 auto 0; background: #ccc; cursor: pointer; padding: 5px 10px; text-align: center; font: 15px Arial; display: block; }
+        .popup .play-btn { margin: 15px auto 0; background: #ccc; cursor: pointer; padding: 5px 10px; text-align: center; font: 15px Arial; display: block; }
+        .choose-team .x-team { font: 50px Tahoma; margin-right: 50px; color: red; display: inline-block; text-align: center; }
+        .choose-team .o-team { font: 50px Tahoma; color: blue; display: inline-block; text-align: center; }
+        .choose-team a.selected { color: black !important; }
+    </style>
+</head>
+<body>
+
+<div class="countdown x"><span>5</span> saniye kaldı!</div>
+
+<div id="popups">
+
+    <!--Bi tane olsunda trigger edek!-->
+    <button class="close-btn hidden">X</button>
+
+    <div class="choose-team popup">
+        <!--<button class="close-btn">X</button>-->
+        <p>Choose your team</p>
+        <a href="#" class="x-team" data-team="x">X</a><a href="#" class="o-team" data-team="o">O</a>
+        <button class="play-btn">PLAY</button>
+    </div>
+
+    <div class="win popup hidden" data-name="win">
+        <!--<button class="close-btn">X</button>-->
+        <p></p>
+        <button class="ok">OK</button>
+    </div>
+
+    <div class="reserved-team popup hidden" data-name="reserved-team">
+        <!--<button class="close-btn">X</button>-->
+        <p>This team has been reserved before, please choose the other team!</p>
+        <button class="ok">OK</button>
+    </div>
+
+    <div class="play-time-finished popup hidden" data-name="play-time-finished">
+        <!--<button class="close-btn">X</button>-->
+        <p>Time is finished, you have lost ): Click "OK" button and play again!</p>
+        <button class="ok">OK</button>
+    </div>
+
+    <div class="no-winners popup hidden" data-name="no-winners">
+        <!--<button class="close-btn">X</button>-->
+        <p>No winners!</p>
+        <button class="ok">OK</button>
+    </div>
+
+    <div class="rival-left-game popup hidden" data-name="rival-left-game">
+        <!--<button class="close-btn">X</button>-->
+        <p>Your rival left the game!</p>
+        <button class="ok">OK</button>
+    </div>
+
+    <div class="rival-win popup hidden" data-name="rival-win">
+        <!--<button class="close-btn">X</button>-->
+        <p>You have lost! Your rival is win!</p>
+        <button class="ok">OK</button>
+    </div>
+
+    <div class="your-win popup hidden" data-name="your-win">
+        <!--<button class="close-btn">X</button>-->
+        <p>You have winner! Your rival don't play on time!</p>
+        <button class="ok">OK</button>
+    </div>
+
+</div>
+
+<button class="win pp-btn hidden" data-id="win"></button>
+<button class="reserved-team pp-btn hidden" data-id="reserved-team"></button>
+<button class="play-time-finished pp-btn hidden" data-id="play-time-finished"></button>
+<button class="no-winners pp-btn hidden" data-id="play-time-finished"></button>
+<button class="rival-left-game pp-btn hidden" data-id="rival-left-game"></button>
+<button class="rival-win pp-btn hidden" data-id="rival-win"></button>
+<button class="your-win pp-btn hidden" data-id="your-win"></button>
+
+<div class="item selected" data-person="" data-location="1"></div>
+<div class="item selected" data-person="" data-location="2"></div>
+<div class="item selected" data-person="" data-location="3"></div>
+<div class="item selected" data-person="" data-location="4"></div>
+<div class="item selected" data-person="" data-location="5"></div>
+<div class="item selected" data-person="" data-location="6"></div>
+<div class="item selected" data-person="" data-location="7"></div>
+<div class="item selected" data-person="" data-location="8"></div>
+<div class="item selected" data-person="" data-location="9"></div>
+
+<script type="text/javascript" src="https://turshoe.com/html/j/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+
+XOX = {
+
+    me: null,
+
+    playRank: "x",
+
+    count: 0,
+
+    flagCount: 0,
+
+    noWinCount: 0,
+
+    playCount: 0,
+
+    socketVar: io.connect('http://localhost:3000'),
+
+    winArr: [],
+
+    timeFinishRivalWinCount: 0,
+
+    init: function(){
+
+        XOX.widthHeightCalc();
+
+        $(window).on('resize',XOX.widthHeightCalc);
+
+        $('.item').on('click',XOX.choose);
+
+    },
+
+    popup: {
+
+        init: function(){
+            $('.pp-btn').on('click',XOX.popup.open);
+            $('.close-btn').on('click',XOX.popup.close);
+        },
+
+        open: function(){
+            XOX.popup.close();
+            $('.item').addClass('selected');
+            $('.popup[data-name="'+$(this).attr('data-id')+'"]').removeClass('hidden');
+        },
+
+        close: function(){
+            $('.item').removeClass('selected');
+            $('.popup').addClass('hidden');
+        }
+
+    },
+
+    countdown: {
+
+        value: 6,
+
+        interval: null,
+
+        flag: 0,
+
+        right: 0,
+
+        init: function(){
+
+            if ( XOX.countdown.flag ) {
+
+                XOX.countdown.interval = setInterval(function(){
+
+                    XOX.countdown.value--;
+
+                    if ( XOX.countdown.value >= 0 && !$('.countdown').hasClass('stop') ) {
+
+                        if ( XOX.countdown.value != 0 ){
+
+                            $('.countdown span').html(XOX.countdown.value);
+
+                        } else if ( XOX.countdown.value == 0 ) {
+
+                            $('.countdown span').html(XOX.countdown.value);
+
+                            clearInterval(XOX.countdown.interval);
+
+                            XOX.socketVar.emit('play time finished',XOX.playRank);
+
+                        }
+
+                    }
+
+                },1000);
+
+            }
+
+        }
+
+    },
+
+    widthHeightCalc: function(){
+        var winWidth    = $(window).width();
+        var winHeight   = $(window).height();
+        var itemWidth   = ((winWidth-12)/3);
+        var itemHeight  = ((winHeight-12)/3);
+        $('.item').width(itemWidth).height(itemHeight);
+    },
+
+    chooseTeam: {
+
+        init: function(){
+            $('.choose-team a').on('click',XOX.chooseTeam.choose);
+            $('.choose-team .play-btn').on('click',XOX.chooseTeam.play);
+        },
+
+        choose: function(){
+            $(this).siblings('a').removeClass('selected');
+            $(this).addClass('selected');
+            return false;
+        },
+
+        play: function(){
+            var selected = jQuery.trim($(this).siblings('a.selected').attr('data-team'));
+            if ( selected.length ) {
+                $('.close-btn').trigger('click');
+                XOX.socketVar.emit('new user', selected, function(data){
+                    if (data){
+                        console.log(data);
+                    } else {
+                        $('.reserved-team.pp-btn').trigger('click');
+                    }
+                });
+            }
+        }
+    },
+
+    choose: function(){
+
+        if( XOX.playRank != XOX.me )
+            return false;
+
+        var th = $(this);
+
+        if( th.hasClass('selected') || $('.item').hasClass('win') )
+            return false;
+
+        if ( th.text().length )
+            console.log('ben bir');
+
+        XOX.count++;
+
+        XOX.socketVar.emit('my data', XOX.me+'-'+th.attr('data-location'));
+
+        XOX.socketVar.emit('play rank', XOX.me);
+
+    },
+
+    controlMechanism: function(location){
+
+        //console.log(winArr[0].match(id));
+
+        if(XOX.count >= 3){
+
+            for(var i = 0; i < XOX.winArr.length; i++){
+
+                if(XOX.winArr[i].match(location) > -1){
+
+                    var flag = true;
+                    var grid = XOX.winArr[i].split('');
+
+                    for(var j = 0; j < grid.length; j++){
+                        if ( $('.item[data-location="'+grid[j]+'"]').attr('data-person') != XOX.me ){
+                            flag = false;
+                        }
+                    }
+
+                    if(flag) {
+                        XOX.noWinCount = 1;
+                        var winData = grid[0]+'-'+grid[1]+'-'+grid[2]+'-'+XOX.me;
+                        XOX.socketVar.emit('win data',winData);
+                        break;
+                    }
+
+                }
+                if(flag) break;
+            }
+
+
+
+        }
+    },
+
+    clear: function(clearClass,closePopup){
+        //clearClass = clearClass || false;
+        if (clearClass != undefined){
+            $('.item').removeClass('selected x o win').attr('data-person','').html('');
+        }
+        if (closePopup != undefined){
+            XOX.popup.close();
+        }
+        XOX.count = 0;
+        XOX.noWinCount = 0;
+        clearInterval(XOX.countdown.interval);
+        XOX.countdown.flag = 1;
+        XOX.countdown.value = 6;
+        XOX.countdown.init();
+
+    },
+
+    clearCountdown: function(){
+        XOX.noWinCount = 0;
+        clearInterval(XOX.countdown.interval);
+        XOX.countdown.flag = 1;
+        XOX.countdown.value = 6;
+        XOX.countdown.init();
+    }
+
+};
+
+$(document).ready(function(){
+
+    XOX.popup.init();
+
+    XOX.chooseTeam.init();
+
+    // Hepsini doldurduklarındaki kazanamama durumu!
+    if ( XOX.playCount == 9 && XOX.noWinCount == 0 ){
+        XOX.socketVar.emit('clear player data');
+    }
+
+    var con = io.connect('http://localhost:3000');
+
+    con.on("js init", function(winArr) {
+        XOX.init();
+        XOX.winArr = winArr;
+        $('.item').removeClass('selected');
+        $('.close-btn').trigger('click');
+    });
+
+    con.on('call nick', function(data){
+        XOX.me = data;
+    });
+
+    con.on('call play rank', function(data){
+
+        XOX.playRank = data;
+        $('.countdown').removeClass('x o').addClass(XOX.playRank);
+
+    });
+
+    con.on('countdown init', function(){
+        XOX.clearCountdown();
+    });
+
+    con.on('call my data', function(result){
+
+        var data = result.split('-');
+
+        XOX.playCount = data[2];
+
+        $('.item[data-location="'+data[1]+'"]').html(data[0]).addClass('selected '+ data[0]).attr('data-person',data[0]);
+
+        XOX.controlMechanism(data[1]);
+
+    });
+
+    con.on('call win data', function(data){
+
+        var winData = data.split('-');
+
+        $('.item[data-location="'+winData[0]+'"]').addClass('win');
+        $('.item[data-location="'+winData[1]+'"]').addClass('win');
+        $('.item[data-location="'+winData[2]+'"]').addClass('win');
+
+        var text = 'Oyunu '+ winData[3] +' kazandı, tekrar oynamak için tamam tuşuna tıklayınız.!';
+
+        $('.popup.win p').html(text);
+        $('.win.pp-btn').trigger('click');
+
+        $('.countdown').addClass('stop');
+
+        var a = true;
+        $('.win.popup .ok').click(function(){
+            if ( a ) {
+                XOX.socketVar.emit('selected');
+                a = false;
+            }
+        });
+
+    });
+
+    con.on('call play time finished', function(data){
+
+        if ( XOX.me == XOX.playRank ) {
+
+            $('.play-time-finished.pp-btn').trigger('click');
+
+            var c = true;
+            $('.play-time-finished .ok').click(function(){
+                if ( c ) {
+                XOX.socketVar.emit('sureBittiRakipKazandiRestart');
+                    c = false;
+                }
+            });
+
+        } else {
+
+            $('.your-win.pp-btn').trigger('click');
+            var z = true;
+            $('.your-win .ok').click(function(){
+                if ( z ) {
+                    XOX.socketVar.emit('sureBittiRakipKazandiRestart');
+                    z = false;
+                }
+            });
+
+        }
+
+    });
+
+    con.on('call no winners', function(){
+        $('.no-winner.pp-btn').trigger('click');
+        $('.no-winner .ok').click(function(){
+            XOX.clear(true,true);
+        });
+    });
+
+    con.on('playerDown', function(){
+        $('.rival-left-game.pp-btn').trigger('click');
+    });
+
+    con.on('call clear player data', function(){
+        $('.countdown').removeClass('stop');
+        XOX.clear(true,true);
+        XOX.clearCountdown();
+    });
+
+    con.on('call selected class', function(data){
+        $('.item').addClass('selected');
+        console.log(data+'roundsonurestartcount')
+    });
+
+    con.on('call sbrkr', function(data){
+        $('.item').addClass('selected');
+        console.log(data+'sürebittirakipkazandi');
+    });
+
+    con.on('rakipCiktiCount', function(playerNumber){
+        if ( playerNumber == 1 ) {
+            $('.countdown span').html('5 saniye kaldı!').addClass('stop');
+            $('.item').addClass('selected');
+        }
+    });
+
+    con.on('temizleBekle', function(){
+        $('.close-btn').trigger('click');
+        XOX.clear(true,true);
+        $('.item').addClass('selected');
+        XOX.clearCountdown();
+        clearInterval(XOX.countdown.interval);
+        $('.countdown').addClass('stop');
+    });
+
+    // init only clear func.
+    $('.popup .ok').on('click', function(){
+
+        // Start Game!
+        if ( XOX.me != null ) {
+            $('.close-btn').trigger('click');
+        }
+
+        // Return choose team popup.
+        if ( $(this).parent('.rival-left-game.popup').length ) {
+            $('.rival-left-game.popup').addClass('hidden');
+            $('.choose-team').removeClass('hidden');
+
+        }
+
+        // Return choose team popup.
+        if ( $(this).parent('.reserved-team.popup').length ) {
+            $('.reserved-team.popup').addClass('hidden');
+            $('.choose-team').removeClass('hidden');
+        }
+
+        // XOX.clear(true,true);
+
+    });
+
+});
+
+</script>
+</body>
+</html>
