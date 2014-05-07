@@ -159,16 +159,16 @@ io.sockets.on('connection', function(socket){
 
             socket.broadcast.emit('playerDown');
 
-            socket.broadcast.emit('temizleBekle');
-            socket.emit('temizleBekle');
+            socket.broadcast.emit('clearWait');
+            socket.emit('clearWait');
 
 //            socket.broadcast.emit("call clear player data",playCount);
 //            socket.emit("call clear player data",playCount);
 //            fs.writeFile("team.txt", 'null');
 //            fs.writeFile("select-team.txt", 'x');
 
-            socket.broadcast.emit('rakipCiktiCount',connectionCount);
-            socket.emit('rakipCiktiCount',connectionCount);
+            socket.broadcast.emit('rivalDownCount',connectionCount);
+            socket.emit('rivalDownCount',connectionCount);
 
         } else if ( connectionCount == 0 ){
             fs.writeFile("foo.txt", 0);

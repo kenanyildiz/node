@@ -203,10 +203,10 @@ XOX = {
     },
 
     widthHeightCalc: function(){
-        var winWidth    = $(window).width();
-        var winHeight   = $(window).height();
-        var itemWidth   = ((winWidth-12)/3);
-        var itemHeight  = ((winHeight-12)/3);
+        var winWidth    = $(window).width(),
+            winHeight   = $(window).height(),
+            itemWidth   = ((winWidth-12)/3),
+            itemHeight  = ((winHeight-12)/3);
         $('.item').width(itemWidth).height(itemHeight).css('line-height',itemHeight+'px');
     },
 
@@ -331,18 +331,13 @@ $(document).ready(function(){
 
     XOX.chooseTeam.init();
 
-//    // Hepsini doldurduklarındaki kazanamama durumu!
-//    if ( XOX.playCount == 9 && XOX.noWinCount == 0 ){
-//        XOX.socketVar.emit('clear player data');
-//    }
-
     var con = io.connect('http://localhost:3000');
 
     con.on("js init", function(winArr) {
         XOX.init();
         XOX.winArr = winArr;
         $('.item').removeClass('selected');
-        $('.close-btn').trigger('click');
+        XOX.popup.close();
     });
 
     con.on('call nick', function(data){
@@ -406,7 +401,7 @@ $(document).ready(function(){
             var c = true;
             $('.play-time-finished .ok').click(function(){
                 if ( c ) {
-                //XOX.socketVar.emit('sureBittiRakipKazandiRestart');
+                XOX.socketVar.emit('sureBittiRakipKazandiRestart');
                     c = false;
                 }
             });
@@ -417,7 +412,7 @@ $(document).ready(function(){
             var z = true;
             $('.your-win .ok').click(function(){
                 if ( z ) {
-                    //XOX.socketVar.emit('sureBittiRakipKazandiRestart');
+                    XOX.socketVar.emit('sureBittiRakipKazandiRestart');
                     z = false;
                 }
             });
@@ -445,23 +440,21 @@ $(document).ready(function(){
 
     con.on('call selected class', function(data){
         $('.item').addClass('selected');
-        console.log(data+'roundsonurestartcount')
     });
 
     con.on('call sbrkr', function(data){
         $('.item').addClass('selected');
-        console.log(data+'sürebittirakipkazandi');
     });
 
-    con.on('rakipCiktiCount', function(playerNumber){
+    con.on('rivalDownCount', function(playerNumber){
         if ( playerNumber == 1 ) {
-            $('.countdown span').html('5 saniye kaldı!').addClass('stop');
+            $('.countdown span').html('5<span> saniye kaldı</span>').addClass('stop');
             $('.item').addClass('selected');
         }
     });
 
-    con.on('temizleBekle', function(){
-        $('.close-btn').trigger('click');
+    con.on('clearWait', function(){
+        XOX.popup.close();
         XOX.clear(true,true);
         $('.item').addClass('selected');
         XOX.clearCountdown();
@@ -469,19 +462,17 @@ $(document).ready(function(){
         $('.countdown').addClass('stop');
     });
 
-    // init only clear func.
     $('.popup .ok').on('click', function(){
 
         // Start Game!
         if ( XOX.me != null ) {
-            $('.close-btn').trigger('click');
+            XOX.popup.close();
         }
 
         // Return choose team popup.
         if ( $(this).parent('.rival-left-game.popup').length ) {
             $('.rival-left-game.popup').addClass('hidden');
             $('.choose-team').removeClass('hidden');
-
         }
 
         // Return choose team popup.
@@ -489,8 +480,6 @@ $(document).ready(function(){
             $('.reserved-team.popup').addClass('hidden');
             $('.choose-team').removeClass('hidden');
         }
-
-        // XOX.clear(true,true);
 
     });
 
