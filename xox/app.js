@@ -62,14 +62,11 @@ io.sockets.on('connection', function(socket){
             socket.broadcast.emit('countdown init');
             socket.emit('countdown init');
 
-
         }
         socket.emit('call nick', socket.nickname);
     });
 
     socket.on('play rank', function(parData){
-
-//        fs.writeFile("select-team.txt", parData);
 
         if (parData == "x"){
             socket.broadcast.emit("call play rank", "o");
@@ -162,13 +159,18 @@ io.sockets.on('connection', function(socket){
             socket.broadcast.emit('clearWait');
             socket.emit('clearWait');
 
-//            socket.broadcast.emit("call clear player data",playCount);
-//            socket.emit("call clear player data",playCount);
-//            fs.writeFile("team.txt", 'null');
-//            fs.writeFile("select-team.txt", 'x');
+           // Restart
+            socket.on('restart', function(nicknames){
+                socket.broadcast.emit('call restart');
+                socket.emit('call restart');
+                playerNumber = 0;
+                roundSonuRestartCount = 0;
+                sureBittiRakipKazandiRestartCount = 0;
+                nicknames = [];
+            });
 
-            socket.broadcast.emit('rivalDownCount',connectionCount);
-            socket.emit('rivalDownCount',connectionCount);
+            socket.broadcast.emit('noRestartTeam');
+            nicknames = ['x'];
 
         } else if ( connectionCount == 0 ){
             fs.writeFile("foo.txt", 0);

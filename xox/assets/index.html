@@ -11,8 +11,8 @@
         .item.selected { background: gray; }
         .item.x { color: red; }
         .item.o { color: blue; }
-        .item.win { background: white !important; }
-        div.countdown { background: black; text-align: center; color: white; display: inline-block; font: 20px Arial; position: absolute; padding: 20px; right: 0px; bottom: 30px; }
+        .item.win { background: white; }
+        div.countdown { background: black; text-align: center; color: white; display: inline-block; font: 20px Arial; position: absolute; padding: 20px; right: 0; bottom: 30px; }
         div.countdown.x { background: red }
         div.countdown.o { background: blue }
         .popup { width: 300px; padding: 30px 30px 20px 30px; text-align: center; background: #e7e7e7; position: absolute; top: 20%; left: 50%; margin: 0 0 0 -200px; }
@@ -23,7 +23,7 @@
         .popup .play-btn { margin: 15px auto 0; background: #ccc; cursor: pointer; padding: 5px 10px; text-align: center; font: 15px Arial; display: block; }
         .choose-team .x-team { font: 50px Tahoma; margin-right: 50px; color: red; display: inline-block; text-align: center; }
         .choose-team .o-team { font: 50px Tahoma; color: blue; display: inline-block; text-align: center; }
-        .choose-team a.selected { color: black !important; }
+        .choose-team a.selected { color: black; }
     </style>
 </head>
 <body>
@@ -300,7 +300,6 @@ XOX = {
     clear: function(clearClass,closePopup){
         //clearClass = clearClass || false;
         if (clearClass != undefined){
-            console.log('Silcem!');
             $('.item').removeClass('selected x o win').attr('data-person','').html('');
         }
         if (closePopup != undefined){
@@ -345,10 +344,8 @@ $(document).ready(function(){
     });
 
     con.on('call play rank', function(data){
-
         XOX.playRank = data;
         $('.countdown').removeClass('x o').addClass(XOX.playRank);
-
     });
 
     con.on('countdown init', function(){
@@ -430,6 +427,7 @@ $(document).ready(function(){
 
     con.on('playerDown', function(){
         $('.rival-left-game.pp-btn').trigger('click');
+        restart();
     });
 
     con.on('call clear player data', function(){
@@ -444,13 +442,6 @@ $(document).ready(function(){
 
     con.on('call sbrkr', function(data){
         $('.item').addClass('selected');
-    });
-
-    con.on('rivalDownCount', function(playerNumber){
-        if ( playerNumber == 1 ) {
-            $('.countdown span').html('5<span> saniye kaldı</span>').addClass('stop');
-            $('.item').addClass('selected');
-        }
     });
 
     con.on('clearWait', function(){
@@ -472,7 +463,7 @@ $(document).ready(function(){
         // Return choose team popup.
         if ( $(this).parent('.rival-left-game.popup').length ) {
             $('.rival-left-game.popup').addClass('hidden');
-            $('.choose-team').removeClass('hidden');
+            XOX.socketVar.emit('restart');
         }
 
         // Return choose team popup.
@@ -482,6 +473,27 @@ $(document).ready(function(){
         }
 
     });
+
+    con.on('call restart', function(nicknames){
+        console.log(nicknames);
+//        restart();
+    });
+
+    con.on('noRestartTeam', function(){
+        XOX.me = 'x';
+    });
+
+    /* En Başa Al */
+    function restart(){
+        XOX.me = null;
+        XOX.count = 0;
+        XOX.noWinCount = 0;
+        $('.item').addClass('selected');
+        XOX.clearCountdown();
+        clearInterval(XOX.countdown.interval);
+        $('.countdown').addClass('stop');
+        $('.choose-team').removeClass('hidden');
+    }
 
 });
 
