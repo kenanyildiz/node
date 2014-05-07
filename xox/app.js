@@ -156,8 +156,6 @@ io.sockets.on('connection', function(socket){
 
             socket.broadcast.emit('playerDown');
 
-            socket.broadcast.emit('clearWait');
-            socket.emit('clearWait');
 
            // Restart
             socket.on('restart', function(nicknames){

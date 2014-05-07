@@ -166,8 +166,6 @@ XOX = {
 
         flag: 0,
 
-        right: 0,
-
         init: function(){
 
             if ( XOX.countdown.flag ) {
@@ -427,7 +425,7 @@ $(document).ready(function(){
 
     con.on('playerDown', function(){
         $('.rival-left-game.pp-btn').trigger('click');
-        restart();
+
     });
 
     con.on('call clear player data', function(){
@@ -444,14 +442,7 @@ $(document).ready(function(){
         $('.item').addClass('selected');
     });
 
-    con.on('clearWait', function(){
-        XOX.popup.close();
-        XOX.clear(true,true);
-        $('.item').addClass('selected');
-        XOX.clearCountdown();
-        clearInterval(XOX.countdown.interval);
-        $('.countdown').addClass('stop');
-    });
+
 
     $('.popup .ok').on('click', function(){
 
@@ -462,8 +453,14 @@ $(document).ready(function(){
 
         // Return choose team popup.
         if ( $(this).parent('.rival-left-game.popup').length ) {
-            $('.rival-left-game.popup').addClass('hidden');
+//            $('.rival-left-game.popup').addClass('hidden');
+
+
+            XOX.popup.close();
+            XOX.clear(true,true);
+
             XOX.socketVar.emit('restart');
+
         }
 
         // Return choose team popup.
@@ -474,9 +471,8 @@ $(document).ready(function(){
 
     });
 
-    con.on('call restart', function(nicknames){
-        console.log(nicknames);
-//        restart();
+    con.on('call restart', function(){
+        restart();
     });
 
     con.on('noRestartTeam', function(){
@@ -488,6 +484,8 @@ $(document).ready(function(){
         XOX.me = null;
         XOX.count = 0;
         XOX.noWinCount = 0;
+        XOX.countdown.flag = 1;
+        XOX.countdown.value = 6;
         $('.item').addClass('selected');
         XOX.clearCountdown();
         clearInterval(XOX.countdown.interval);
