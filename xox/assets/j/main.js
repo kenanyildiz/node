@@ -266,7 +266,14 @@ $(document).ready(function(){
         $('.item[data-location="'+winData[1]+'"]').addClass('win');
         $('.item[data-location="'+winData[2]+'"]').addClass('win');
 
-        var text = 'Oyunu '+ winData[3] +' kazandı, tekrar oynamak için tamam tuşuna tıklayınız.!';
+        var kazanan;
+        if ( winData[3] == XOX.me ){
+            kazanan = 'siz kazandınız';
+        } else {
+            kazanan == 'rakibiniz kazandı';
+        }
+
+        var text = 'Oyunu '+ kazanan +', tekrar oynamak için tamam tuşuna tıklayınız.!';
 
         $('.popup.win p').html(text);
         $('.win.pp-btn').trigger('click');
