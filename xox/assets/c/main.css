@@ -1,0 +1,20 @@
+* { margin: 0; padding: 0; border: 0; text-decoration: none }
+html, body { width: 100%; height: 100%; overflow: hidden }
+.hidden { display: none !important; }
+.item { float: left; background: #aaa; border: 2px solid black; text-transform: uppercase; cursor: pointer; display: table; vertical-align: middle; font: 10rem Tahoma; text-align: center; }
+.item.selected { background: gray; }
+.item.x { color: red; }
+.item.o { color: blue; }
+.item.win { background: white; }
+div.countdown { background: black; text-align: center; color: white; display: inline-block; font: 20px Arial; position: absolute; padding: 20px; right: 0; bottom: 30px; }
+div.countdown.x { background: red }
+div.countdown.o { background: blue }
+.popup { width: 300px; padding: 30px 30px 20px 30px; text-align: center; background: #e7e7e7; position: absolute; top: 20%; left: 50%; margin: 0 0 0 -200px; }
+.popup .close-btn { background: #e7e7e7; cursor: pointer; outline: none; color: white; font: 24px Tahoma; position: absolute; top: -20px; right: -10px; padding: 5px 10px; border-radius: 50%; }
+.popup .close-btn:hover { color: #999; }
+.popup p { font: 18px Arial; color: #aaa; text-align: center; margin-bottom: 15px; }
+.popup .ok { margin: 0 auto 0; background: #ccc; cursor: pointer; padding: 5px 10px; text-align: center; font: 15px Arial; display: block; }
+.popup .play-btn { margin: 15px auto 0; background: #ccc; cursor: pointer; padding: 5px 10px; text-align: center; font: 15px Arial; display: block; }
+.choose-team .x-team { font: 50px Tahoma; margin-right: 50px; color: red; display: inline-block; text-align: center; }
+.choose-team .o-team { font: 50px Tahoma; color: blue; display: inline-block; text-align: center; }
+.choose-team a.selected { color: black; }

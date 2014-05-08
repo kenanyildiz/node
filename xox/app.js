@@ -16,9 +16,11 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 
-app.get('/', function(req, res){
-    res.sendfile(__dirname + '/assets/index.html');
-});
+app.use(express.static(__dirname + '/assets/'));
+
+//app.get('/', function(req, res){
+//    res.sendfile(__dirname + '/assets/index.html');
+//});
 
 var connectionCount = 0;
 var playerNumber = 0;
@@ -28,6 +30,10 @@ var sureBittiRakipKazandiRestartCount = 0;
 io.sockets.on('connection', function(socket){
 
     connectionCount++;
+
+    if (connectionCount>2){
+        socket.emit('thirdPlayer');
+    }
 
     socket.emit("connectionCountChanged", connectionCount);
 
@@ -138,6 +144,12 @@ io.sockets.on('connection', function(socket){
         }
 
     });
+
+//    socket.on('no winners', function(){
+//        playCount = 0;
+//        socket.broadcast.emit('call no winners');
+//        socket.emit('call no winners');
+//    });
 
     socket.on('clear player data', function(){
         playCount = 0;
