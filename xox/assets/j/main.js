@@ -394,6 +394,4 @@ $(document).ready(function(){
         $('.choose-team').removeClass('hidden');
     }
 
-
-
 });
