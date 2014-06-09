@@ -179,7 +179,7 @@ XOX = {
 
             // Hepsini doldurduklarındaki kazanamama durumu!
             if ( XOX.playCount == 9 && XOX.noWinCount == 0 ){
-                alert('Kazanamadık!');
+                // alert('Kazanamadık!');
                 XOX.socketVar.emit('no winners');
             }
 
@@ -270,7 +270,7 @@ $(document).ready(function(){
         if ( winData[3] == XOX.me ){
             kazanan = 'siz kazandınız';
         } else {
-            kazanan == 'rakibiniz kazandı';
+            kazanan = 'rakibiniz kazandı';
         }
 
         var text = 'Oyunu '+ kazanan +', tekrar oynamak için tamam tuşuna tıklayınız.!';
