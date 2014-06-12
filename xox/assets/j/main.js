@@ -20,6 +20,8 @@ XOX = {
 
     init: function(){
 
+        $('.item, .countdown').removeClass('hidden');
+
         XOX.widthHeightCalc();
 
         $(window).on('resize',XOX.widthHeightCalc);
@@ -267,11 +269,8 @@ $(document).ready(function(){
         $('.item[data-location="'+winData[2]+'"]').addClass('win');
 
         var kazanan;
-        if ( winData[3] == XOX.me ){
-            kazanan = 'siz kazandınız';
-        } else {
-            kazanan = 'rakibiniz kazandı';
-        }
+
+        (winData[3] == XOX.me) ? kazanan = 'siz kazandınız' : kazanan = 'rakibiniz kazandı';
 
         var text = 'Oyunu '+ kazanan +', tekrar oynamak için tamam tuşuna tıklayınız.!';
 

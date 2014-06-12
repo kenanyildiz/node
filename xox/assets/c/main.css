@@ -6,9 +6,9 @@ html, body { width: 100%; height: 100%; overflow: hidden }
 .item.x { color: red; }
 .item.o { color: blue; }
 .item.win { background: white; }
-div.countdown { background: black; text-align: center; color: white; display: inline-block; font: 20px Arial; position: absolute; padding: 20px; right: 0; bottom: 30px; }
-div.countdown.x { background: red }
-div.countdown.o { background: blue }
+.countdown   { background: black; text-align: center; color: white; display: inline-block; font: 20px Arial; position: absolute; padding: 20px; right: 0; bottom: 30px; }
+.countdown.x { background: red }
+.countdown.o { background: blue }
 .popup { width: 300px; padding: 30px 30px 20px 30px; text-align: center; background: #e7e7e7; position: absolute; top: 20%; left: 50%; margin: 0 0 0 -200px; }
 .popup .close-btn { background: #e7e7e7; cursor: pointer; outline: none; color: white; font: 24px Tahoma; position: absolute; top: -20px; right: -10px; padding: 5px 10px; border-radius: 50%; }
 .popup .close-btn:hover { color: #999; }
