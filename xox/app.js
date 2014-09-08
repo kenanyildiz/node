@@ -1,12 +1,12 @@
 var express = require('express'),
-    app = express(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server),
-    path = require('path'),
-    fs = require("fs"),
-    nicknames = [],
-    playCount = 0,
-    winArr = ['123','147','159','258','369','357','456','789'];
+    app     = express(),
+    server  = require('http').createServer(app),
+    io      = require('socket.io').listen(server),
+    path    = require('path'),
+    fs      = require("fs"),
+    nicknames   = [],
+    playCount   = 0,
+    winArr      = ['123','147','159','258','369','357','456','789'];
 
 server.listen(3000);
 
